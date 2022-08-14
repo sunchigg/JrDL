@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# RNN-intent_cls_and_slot_tag
+*.DS_Store
+glove.840B.300d.txt
+glove.840B.300d.zip
+*/ckpt/*
+pred.intent.csv
+pred.slot.csv
+pred.slot_eval.csv
+pred.slot_eval.json
