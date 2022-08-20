@@ -137,3 +137,15 @@ pred.intent.csv
 pred.slot.csv
 pred.slot_eval.csv
 pred.slot_eval.json
+
+# BERT-qa
+/BERT-qa/bonus/ckpt/*
+/BERT-qa/saved/*
+*/__pycache__/*
+*/task_data/*
+slctn_metric.py.lock
+slctn_qa.py.lock
+slctn_results.json
+prediction.csv
+prediction.json
+__MACOSX/*
