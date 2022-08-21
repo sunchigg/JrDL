@@ -149,3 +149,11 @@ slctn_results.json
 prediction.csv
 prediction.json
 __MACOSX/*
+
+# NLG-summarization
+/NLG-summarization/data/*
+/NLG-summarization/saved/*
+/NLG-summarization/task_data/*
+submission.jsonl
+
+# WarmUp

@@ -1,0 +1,5 @@
+transformers==4.5.0
+datasets==1.6.0
+accelerate==0.2.1
+sentencepiece==0.1.91
+# cat /usr/local/cuda/version.txt
