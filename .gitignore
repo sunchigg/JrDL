@@ -156,4 +156,7 @@ __MACOSX/*
 /NLG-summarization/task_data/*
 submission.jsonl
 
-# WarmUp
+# Reimplement-OTTers
+
+# NLG-topic_transitioning
+# Transitioning from Open-Domain to Task-Related Topics
