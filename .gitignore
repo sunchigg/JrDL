@@ -157,6 +157,11 @@ __MACOSX/*
 submission.jsonl
 
 # Reimplement-OTTers
+/Reimplement-OTTers/data/*
+/Reimplement-OTTers/data_multigen/*
+/Reimplement-OTTers/models/*
+/Reimplement-OTTers/data_ott/*
+/Reimplement-OTTers/data_multigen/*
+/Reimplement-OTTers/runs/*
 
 # NLG-topic_transitioning
-# Transitioning from Open-Domain to Task-Related Topics
