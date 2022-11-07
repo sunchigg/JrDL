@@ -8,9 +8,8 @@ import torch
 import torch.nn as nn
 from tqdm import trange, tqdm
 
-# from utils import Vocab
+
 from dataset_intent_bert import SeqClsDataset
-# from model_intent import SeqClassifier
 from transformers import AdamW, BertForSequenceClassification, BertTokenizerFast
 
 TRAIN = "train"
@@ -19,9 +18,6 @@ SPLITS = [TRAIN, DEV]
 
 
 def main(args):
-    # with open(args.cache_dir / "vocab.pkl", "rb") as f:
-    #     vocab: Vocab = pickle.load(f)
-
     intent_idx_path = args.cache_dir / "intent2idx.json"
     intent2idx: Dict[str, int] = json.loads(intent_idx_path.read_text())
 
@@ -33,23 +29,15 @@ def main(args):
         split: SeqClsDataset(split_data, intent2idx, args.max_len, tokenizer, "train")
         for split, split_data in data.items()
     }
-    # TODO: crecate DataLoader for train / dev datasets
+    # Crecate DataLoader for train / dev datasets
     train_loader = torch.utils.data.DataLoader(datasets[TRAIN], batch_size = args.batch_size, shuffle = True, collate_fn = datasets[TRAIN].collate_fn)
     dev_loader = torch.utils.data.DataLoader(datasets[DEV],batch_size = args.batch_size, shuffle = False, collate_fn = datasets[DEV].collate_fn)
 
-    # embeddings = torch.load(args.cache_dir / "embeddings.pt")
-    # TODO: init model and move model to target device(cpu / gpu)
-    # model = SeqClassifier(embeddings = embeddings, hidden_size = args.hidden_size, dropout = args.dropout, num_layers = args.num_layers, bidirectional = True, num_class = 150)
     model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=150)
     device = args.device
-    """try:
-        ckpt = torch.load("./ckpt/intent/model.ckpt")
-        model.load_state_dict(ckpt)
-    except:
-        pass"""
     batch_size = args.batch_size
 
-    # TODO: init optimizer
+    # Init optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=5e-3)
     model.to(device)
     criterion = nn.CrossEntropyLoss()
@@ -57,13 +45,12 @@ def main(args):
 
     epoch_pbar = trange(args.num_epoch, desc="Epoch")
     for epoch in epoch_pbar:
-        # TODO: Training loop - iterate over train dataloader and update model weights
+        # Training loop - iterate over train dataloader and update model weights
         model.train()
         train_loss = 0.0
         train_acc = 0.0
         val_loss = 0.0
         val_acc = 0.0
-        # h = model.init_hidden(batch_size, device)  # init
         for i, data in enumerate(tqdm(train_loader)):
             data = [torch.tensor(j).to(device) for j in data[1:]] 
             optimizer.zero_grad()
@@ -76,7 +63,7 @@ def main(args):
             train_acc += (train_pred.cpu() == data[3].cpu()).sum().item()
             train_loss += loss.item()
             torch.cuda.empty_cache()
-        # TODO: Evaluation loop - calculate accuracy and save model weights
+        # Evaluation loop - calculate accuracy and save model weights
         with torch.no_grad():
             # h = model.init_hidden(batch_size, device)
             model.eval()
@@ -96,20 +83,18 @@ def main(args):
                 print(f"Save model with acc {val_acc / len(dev_loader.dataset)}")
         # pass # 讓原本空白for loop可以過的pass
 
-    # TODO: Inference on test set
+    # Inference on test set
     test_data = None
     with open("./data/intent/test.json", "r") as fp:
         test_data = json.load(fp)
-    # test_dataset = SeqClsDataset(test_data, vocab, intent2idx, args.max_len)
     test_dataset = SeqClsDataset(test_data, intent2idx, args.max_len, tokenizer, "test")
     test_loader = torch.utils.data.DataLoader(test_dataset, shuffle=False, batch_size=150, collate_fn=test_dataset.collate_fn)
     model.eval()
-    # ids = [d["id"] for d in test_data]
 
     # predict dataset
     preds = []
     ids = [d['id'] for d in test_data]
-    with open("./pred.intent.csv", "w") as fp:
+    with open("./pred_cls.csv", "w") as fp:
         fp.write("id,intent\n")
         with torch.no_grad():
             for i, data in enumerate(tqdm(test_loader)):
