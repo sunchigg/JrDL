@@ -10,7 +10,7 @@ from torch.utils.data import Dataset
 class SeqClsDataset(Dataset):
     def __init__(
         self,
-        data: List[Dict],
+        data: List[Dict],  # list of dict
         label_mapping: Dict[str, int],
         max_len: int,
         tokenizer,
