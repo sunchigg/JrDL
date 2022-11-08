@@ -145,6 +145,8 @@ pred.slot_eval.json
 */task_data/*
 slctn_metric.py.lock
 slctn_qa.py.lock
+/BERT-qa/metric_slctn.py.lock
+/BERT-qa/metric_qa.py.lock
 slctn_results.json
 prediction.csv
 prediction.json
