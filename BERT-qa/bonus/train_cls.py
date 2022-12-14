@@ -9,7 +9,7 @@ import torch.nn as nn
 from tqdm import trange, tqdm
 
 
-from dataset_intent_bert import SeqClsDataset
+from dataset_cls_bert import SeqClsDataset
 from transformers import (
     AutoTokenizer,
     AdamW,
@@ -26,16 +26,16 @@ def main(args):
     """
     python3 train_cls.py
     """
-    intent_idx_path = args.cache_dir / "intent2idx.json"
-    intent2idx: Dict[str, int] = json.loads(intent_idx_path.read_text())
+    cls_idx_path = args.cache_dir / "cls2idx.json"
+    cls2idx: Dict[str, int] = json.loads(cls_idx_path.read_text())
 
     data_paths = {split: args.data_dir / f"{split}.json" for split in SPLITS}
     data = {split: json.loads(path.read_text()) for split, path in data_paths.items()}
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
     #tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
     datasets: Dict[str, SeqClsDataset] = {
-        # split: SeqClsDataset(split_data, vocab, intent2idx, args.max_len)
-        split: SeqClsDataset(split_data, intent2idx, args.max_len, tokenizer, "train")
+        # split: SeqClsDataset(split_data, vocab, cls2idx, args.max_len)
+        split: SeqClsDataset(split_data, cls2idx, args.max_len, tokenizer, "train")
         for split, split_data in data.items()
     }
     # Crecate DataLoader for train / dev datasets
@@ -88,14 +88,14 @@ def main(args):
             print(f"Epoch {epoch + 1}: Train Acc: {train_acc / len(train_loader.dataset)}, Train Loss: {train_loss / len(train_loader)}, Val Acc: {val_acc / len(dev_loader.dataset)}, Val Loss: {val_loss / len(dev_loader)}")
             if val_acc >= best_acc:
                 best_acc = val_acc
-                torch.save(model.state_dict(),"./ckpt/intent/model.ckpt")
+                torch.save(model.state_dict(),"./ckpt/cls/model.ckpt")
                 print(f"Save model with acc {val_acc / len(dev_loader.dataset)}")
 
     # Inference on test set
     test_data = None
-    with open("./data/intent/test.json", "r") as fp:
+    with open("./data/cls/test.json", "r") as fp:
         test_data = json.load(fp)
-    test_dataset = SeqClsDataset(test_data, intent2idx, args.max_len, tokenizer, "test")
+    test_dataset = SeqClsDataset(test_data, cls2idx, args.max_len, tokenizer, "test")
     test_loader = torch.utils.data.DataLoader(test_dataset, shuffle=False, batch_size=150, collate_fn=test_dataset.collate_fn)
     model.eval()
 
@@ -103,7 +103,7 @@ def main(args):
     preds = []
     ids = [d['id'] for d in test_data]
     with open("./pred_cls.csv", "w") as fp:
-        fp.write("id,intent\n")
+        fp.write("id,cls\n")
         with torch.no_grad():
             for i, data in enumerate(tqdm(test_loader)):
                 ids=data[0]
@@ -120,19 +120,19 @@ def parse_args() -> Namespace:
         "--data_dir",
         type=Path,
         help="Directory to the dataset.",
-        default="./data/intent/",
+        default="./data/cls/",
     )
     parser.add_argument(
         "--cache_dir",
         type=Path,
         help="Directory to the preprocessed caches.",
-        default="./cache/intent/",
+        default="./cache/cls/",
     )
     parser.add_argument(
         "--ckpt_dir",
         type=Path,
         help="Directory to save the model file.",
-        default="./ckpt/intent/",
+        default="./ckpt/cls/",
     )
 
     # data
