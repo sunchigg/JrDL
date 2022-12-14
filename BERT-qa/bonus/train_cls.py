@@ -23,6 +23,9 @@ SPLITS = [TRAIN, DEV]
 
 
 def main(args):
+    """
+    python3 train_cls.py
+    """
     intent_idx_path = args.cache_dir / "intent2idx.json"
     intent2idx: Dict[str, int] = json.loads(intent_idx_path.read_text())
 
@@ -61,7 +64,7 @@ def main(args):
             data = [torch.tensor(j).to(device) for j in data[1:]] 
             optimizer.zero_grad()
             out = model(input_ids = data[0], token_type_ids = data[1], attention_mask=data[2], labels=data[3])
-            loss = out.loss
+            loss = out.loss  # transformers (>= 4.6.1)
             _, train_pred = torch.max(out.logits, 1)
             loss.backward()
             optimizer.step()
@@ -87,7 +90,6 @@ def main(args):
                 best_acc = val_acc
                 torch.save(model.state_dict(),"./ckpt/intent/model.ckpt")
                 print(f"Save model with acc {val_acc / len(dev_loader.dataset)}")
-        # pass # 讓原本空白for loop可以過的pass
 
     # Inference on test set
     test_data = None
@@ -155,7 +157,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--device", type=torch.device,
         help="cpu, cuda, cuda:0, cuda:1, cuda:2, cuda:3",
-        default="cuda:2"
+        default="cuda:0"
     )
     parser.add_argument("--num_epoch", type=int, default=10)  # next 50
 

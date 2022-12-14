@@ -1,0 +1,19 @@
+torch==1.5.0
+    # via -r requirements.in
+#pytorch-lightning==1.2.3
+#spacy==3.0.5
+seqeval==1.2.2
+    # via -r requirements.in
+tqdm==4.64.1
+    # via
+    #   sacremoses
+    #   transformers
+six==1.16.0
+    # via sacremoses
+transformers==4.6.1
+#transformers==3.1.0
+    # via -r requirements.in
+#datasets
+#accelerate==0.2.1
+sentencepiece==0.1.97
+    # via transformers
