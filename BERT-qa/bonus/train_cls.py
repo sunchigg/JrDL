@@ -10,7 +10,12 @@ from tqdm import trange, tqdm
 
 
 from dataset_intent_bert import SeqClsDataset
-from transformers import AdamW, BertForSequenceClassification, BertTokenizerFast
+from transformers import (
+    AutoTokenizer,
+    AdamW,
+    BertForSequenceClassification,
+    BertTokenizerFast
+)
 
 TRAIN = "train"
 DEV = "eval"
@@ -23,7 +28,8 @@ def main(args):
 
     data_paths = {split: args.data_dir / f"{split}.json" for split in SPLITS}
     data = {split: json.loads(path.read_text()) for split, path in data_paths.items()}
-    tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+    #tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
     datasets: Dict[str, SeqClsDataset] = {
         # split: SeqClsDataset(split_data, vocab, intent2idx, args.max_len)
         split: SeqClsDataset(split_data, intent2idx, args.max_len, tokenizer, "train")
@@ -38,7 +44,7 @@ def main(args):
     batch_size = args.batch_size
 
     # Init optimizer
-    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
     model.to(device)
     criterion = nn.CrossEntropyLoss()
     best_acc = 0.0
@@ -131,16 +137,16 @@ def parse_args() -> Namespace:
     parser.add_argument("--max_len", type=int, default=128)
 
     # model
-    parser.add_argument("--hidden_size", type=int, default=512)  # 256
+    parser.add_argument("--hidden_size", type=int, default=256)  # 256
     parser.add_argument("--num_layers", type=int, default=2)  # 2
-    parser.add_argument("--dropout", type=float, default=0.4)  # 0.2
+    parser.add_argument("--dropout", type=float, default=0.2)  # 0.2
     parser.add_argument("--bidirectional", type=bool, default=True)
     # parser.add_argument("--att", action="store_true")
     # parser.add_argument("--att_unit", type=int, default=128)
     # parser.add_argument("--att_hops", type=int, default=16)
 
     # optimizer
-    parser.add_argument("--lr", type=float, default=3e-5)  # 1e-3
+    parser.add_argument("--lr", type=float, default=1e-3)  # 1e-3
 
     # data loader
     parser.add_argument("--batch_size", type=int, default=64)
@@ -149,7 +155,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--device", type=torch.device,
         help="cpu, cuda, cuda:0, cuda:1, cuda:2, cuda:3",
-        default="cuda:1"
+        default="cuda:2"
     )
     parser.add_argument("--num_epoch", type=int, default=10)  # next 50
 

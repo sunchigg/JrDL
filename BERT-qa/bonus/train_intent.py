@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# coding=utf-8
+import os
+import logging
 import math
 import json
 import uuid
@@ -22,11 +26,14 @@ from transformers import (
 UID = str(uuid.uuid1())
 accelerator = Accelerator()
 
+logger = logging.getLogger(__name__)
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 再改
+
 
 def main(args):
-    # 1. Prepare model
+    # Load pretrained tokenizer and model
     config = AutoConfig.from_pretrained(args.model_name_or_path, num_labels=150)
-    # config = AutoConfig.from_pretrained(args.model_name_or_path, num_labels=150, finetuning_task=args.task_name)
+    #config = AutoConfig.from_pretrained(args.model_name_or_path, num_labels=150, finetuning_task=args.task_name)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, use_fast=True)
     model = AutoModelForSequenceClassification.from_pretrained(
         args.model_name_or_path,
@@ -39,7 +46,7 @@ def main(args):
     model.config.label2id = {l: i for i, l in enumerate(intent2idx)}
     model.config.id2label = {idx: label for label, idx in config.label2id.items()}
 
-    # 2. Process data
+    # Load datasets
     raw_datasets = load_dataset("seq_cls.py", name="train", cache_dir="./cache",
                                 train_file='./data/intent/train.json',
                                 eval_file='./data/intent/eval.json')
@@ -89,7 +96,7 @@ def main(args):
     ]
     optimizer = AdamW(optimizer_grouped_parameters, lr=args.lr)
 
-    # 3. Scheduler and math around the number of training steps.
+    # Scheduler
     num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.gradient_accumulation_steps)
     max_train_steps = args.num_epoch * num_update_steps_per_epoch
     print("Num iteration:", len(train_dataloader))
@@ -189,7 +196,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--weight_decay", type=float, default=0.0, help="Weight decay to use.")
 
-    # data loader
+    # DataLoaders
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument(
         "--gradient_accumulation_steps",
