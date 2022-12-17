@@ -140,6 +140,7 @@ pred.slot_eval.json
 
 # BERT-qa
 /BERT-qa/bonus/ckpt/*
+/BERT-qa/bonus/cache/.*
 /BERT-qa/saved/*
 */__pycache__/*
 */task_data/*
@@ -150,6 +151,7 @@ slctn_qa.py.lock
 slctn_results.json
 prediction.csv
 prediction.json
+pred_cls.csv
 __MACOSX/*
 
 # NLG-summarization

@@ -18,7 +18,8 @@ class SeqClsDataset(Dataset):
     ):
         self.data = data
         self.label_mapping = label_mapping
-        self._idx2label = {idx: intent for intent, idx in self.label_mapping.items()}
+        #self._idx2label = {idx: intent for intent, idx in self.label_mapping.items()}
+        self._idx2label = {idx: topic for topic, idx in self.label_mapping.items()}
         self.max_len = max_len
         self.tokenizer = tokenizer
         self.mode = mode
@@ -27,9 +28,12 @@ class SeqClsDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index) -> Dict:
+        """
+        Remember modify-> self.label_mapping[instance["{ur cls}}"]]
+        """
         instance = self.data[index]
         if self.mode == "train":
-            return {"id": instance["id"], "text": self.tokenizer(instance["text"], add_special_tokens=False), "cls": self.label_mapping[instance["intent"]]}
+            return {"id": instance["id"], "text": self.tokenizer(instance["text"], add_special_tokens=False), "cls": self.label_mapping[instance["topic"]]}
         else:
             return {"id": instance["id"], "text": self.tokenizer(instance["text"], add_special_tokens=False)}
 

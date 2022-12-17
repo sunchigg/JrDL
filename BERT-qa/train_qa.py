@@ -1,5 +1,8 @@
-import json
+#!/usr/bin/env python
+# coding=utf-8
 import os
+import logging
+import json
 import numpy as np
 from argparse import ArgumentParser, Namespace
 
