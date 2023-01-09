@@ -1,0 +1,52 @@
+[
+    {
+      "text": "i need you to book me a flight from ft lauderdale to houston on southwest",
+      "intent": "book_flight",
+      "id": "train-0"
+    },
+    {
+      "text": "my check engine light is on and i need to take a look at it",
+      "intent": "schedule_maintenance",
+      "id": "train-1"
+    },
+    {
+      "text": "is the company party on my list of reminders",
+      "intent": "reminder",
+      "id": "train-2"
+    },
+    {
+      "text": "are you a human",
+      "intent": "are_you_a_bot",
+      "id": "train-3"
+    },
+    {
+      "text": "i need to do cleaning so add it to my to do list",
+      "intent": "todo_list_update",
+      "id": "train-4"
+    },
+    {
+      "text": "how do i change my oil and what kind do i need",
+      "intent": "oil_change_how",
+      "id": "train-5"
+    },
+    {
+      "text": "how healthy are french fries",
+      "intent": "nutrition_info",
+      "id": "train-6"
+    },
+    {
+      "text": "i'd like to have everything on my shopping list",
+      "intent": "order",
+      "id": "train-7"
+    },
+    {
+      "text": "what type of plugs are used in cambodia",
+      "intent": "plug_type",
+      "id": "train-8"
+    },
+    {
+      "text": "say trivia about lebron james",
+      "intent": "fun_fact",
+      "id": "train-9"
+    }
+]
