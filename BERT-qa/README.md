@@ -25,14 +25,23 @@
 
 ## Reproduce
 ### Environment
-`conda create -n hw2 python=3.8` . 
-`conda activate hw2` . 
-`pip install -r requirements.txt`
+```bash
+conda create -n hw2 python=3.8
+```
+
+```bash
+conda activate hw2
+```
+
+```bash
+pip install -r requirements.txt
+```
 
 ### Preprocessing and Training
 `bash train.sh`
 
 ### Download model
 `bash download.sh`
+
 ### Predict
 `bash run.sh`
